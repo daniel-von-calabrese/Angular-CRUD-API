@@ -1,0 +1,101 @@
+<div *ngIf="viewMode; else editable">
+	<div *ngIf="currentPost.id">
+		<h4>Post</h4>
+		<div>
+			<label>
+				<strong>Title:</strong>
+			</label>
+			{{ currentPost.title }}
+		</div>
+		<div>
+			<label>
+				<strong>body:</strong>
+			</label>
+			{{ currentPost.body }}
+		</div>
+
+		<a
+			class="btn btn-warning"
+			routerLink="/post/{{ currentPost.id }}"
+		>
+			Edit
+		</a>
+	</div>
+
+	<div *ngIf="!currentPost">
+		<br />
+		<p>Please click on a Post...</p>
+	</div>
+</div>
+
+<ng-template #editable>
+	<div *ngIf="currentPost.id" class="edit-form">
+		<h4>Post</h4>
+		<form name="form" #f="ngForm">
+			<div class="form-group">
+				<label for="title">Title</label>
+				<input
+					type="text"
+					class="form-control"
+					id="title"
+					[(ngModel)]="currentPost.title"
+					name="title"
+					minlength="4"
+					#title="ngModel"
+					required
+				/>
+			</div>
+			<div class="form-group">
+				<label for="body">Body</label>
+				<textarea
+					ng-model="myTextarea"
+					class="form-control"
+					id="body"
+					[(ngModel)]="currentPost.body"
+					name="body"
+					minlength="10"
+					#body="ngModel"
+					rows="4"
+					required
+				></textarea>
+			</div>
+			<div *ngIf="!f.valid">
+				<div *ngIf="title.errors?.['required']">
+					Title is required.
+				</div>
+				<div *ngIf="title.errors?.['minlength']">
+					Title must be at least 4 characters long.
+				</div>
+				<div *ngIf="body.errors?.['required']">
+					Body is required.
+				</div>
+				<div *ngIf="body.errors?.['minlength']">
+					Body must be at least 10 characters long.
+				</div>
+			</div>
+		</form>
+
+		<button class="btn btn-danger m-2" (click)="deletePost()">
+			Delete
+		</button>
+
+		<button
+			type="submit"
+			class="btn btn-success m-2"
+			(click)="updatePost()"
+			[disabled]="!f.valid"
+		>
+			Update
+		</button>
+		<p>
+			{{ message }}
+		</p>
+	</div>
+
+	<div *ngIf="!currentPost.id">
+		<br />
+		<p>
+			Cannot access this Post...
+		</p>
+	</div>
+</ng-template>
